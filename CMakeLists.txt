@@ -10,6 +10,7 @@ set(C_LIB ${CMAKE_BINARY_DIR}/libcombi.a)
 
 if(COMBI EQUAL 0)
     # Building a library from all of the object files compiled as part of this build
+    # This will break if the sub-libs have complex directory structures
     add_custom_target(combined_custom
             COMMAND ar -qcs ${C_LIB} $<TARGET_NAME:a>.dir/*.o $<TARGET_NAME:b>.dir/*.o
             WORKING_DIRECTORY ${CMAKE_BUILD_DIR}CMakeFiles
@@ -23,7 +24,7 @@ elseif(COMBI EQUAL 1)
     add_custom_target(combined_custom
             COMMAND mkdir ${OPREFIX}$<TARGET_NAME:a> || true && cd ${OPREFIX}$<TARGET_NAME:a> &&  ar -x $<TARGET_FILE:a>
             COMMAND mkdir ${OPREFIX}$<TARGET_NAME:b> || true && cd ${OPREFIX}$<TARGET_NAME:b> &&  ar -x $<TARGET_FILE:b>
-            COMMAND ar -qcs ${C_LIB} ${OPREFIX}*/*.o
+            COMMAND ar -rs ${C_LIB} ${OPREFIX}*/*.o
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
             DEPENDS a b
             )
